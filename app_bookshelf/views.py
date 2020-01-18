@@ -1,23 +1,26 @@
 from django.shortcuts import render  
 from django.views import View  
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import CustomUser, Publisher, Author, LargeCategory, SmallCategory, Book, BookReviews, BoookShelf, Like, History
+from .models import CustomUser, Publisher, Author, LargeCategory, SmallCategory, Book, BookReviews, BookShelf, Like, History
 
-
+# マイページ
 class MyPage(LoginRequiredMixin, View):
         def get(self, request, *args, **kwargs):
                 return render(request, 'app_bookshelf/my_page.html')
 my_page = MyPage.as_view()
 
+# 会員登録ページ
 class MakeAccount(LoginRequiredMixin, View):  
         def get(self, request, *args, **kwargs):
                 return render(request, 'app_bookshelf/make_account.html')
 make_account= MakeAccount.as_view()
 
+# 会員情報変更
 class AccountEdit(LoginRequiredMixin, View):  
    def get(self, request, *args, **kwargs):  
         return render(request, 'app_bookshelf/account_edit.html')
 account_edit = AccountEdit.as_view()
+
 
 class Login(LoginRequiredMixin, View):  
    def get(self, request, *args, **kwargs):  

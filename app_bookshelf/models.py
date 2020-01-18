@@ -86,14 +86,15 @@ class BookReviews(models.Model):
     book_review = models.CharField('書籍レビュー', max_length=5000, blank=True, null=True)
 
 
+
 # 本棚マスタ
-class BoookShelf(models.Model):
+class BookShelf(models.Model):
     class Meta:
         db_table = 'book_shelf_master'
         verbose_name_plural = '本棚マスタ'
         
-    learge_category = models.ForeignKey(LargeCategory, verbose_name='大カテゴリ(FK)', null=True, on_delete=models.CASCADE)
-    small_catogory_name = models.CharField('小カテゴリ名', max_length=255, blank=True, null=True)
+    book = models.ForeignKey(Book, verbose_name='書籍(FK)', null=True, on_delete=models.CASCADE)
+    book_shelf_name = models.CharField('本棚名', max_length=255, blank=True, null=True)
 
 
 # いいねテーブル
