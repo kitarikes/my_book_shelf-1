@@ -10,12 +10,18 @@
     <title>タイトル</title>
   </head>
   <body>
-    <nav class='navbar navbar-expand-lg navbar-light bg-light'>
-      <a class='navbar-brand' href='/app_bookshelf/my_page'><img width="40%" src="{% static 'images/top.PNG' %}"></a>
-      <a href="/accounts/login" >ログイン</a>
-      <a href="/accounts/logout" >ログアウト</a>
-    </nav>
-      {% block contents %}
-      {% endblock %}
+    <div class="container-fulid">
+      <div class="row">
+        <div class="col-12 mb-5">
+          <nav class="navbar navbar-light bg-info">
+            <a class="nav-item nav-link text-light" href="{% url 'app_bookshelf:my_page' %}"><img width="40%" src="{% static 'images/top.PNG' %}"></a>
+            <a class="nav-item nav-link text-light" href="/accounts/login" >ログイン</a>
+            <a class="nav-item nav-link text-light" href="/accounts/logout" >ログアウト</a>
+          </nav>
+        </div>
+      </div>
+    </div>
+    {% block contents %}
+    {% endblock %}
   </body>
 </html>
