@@ -88,13 +88,32 @@ class BookReviews(models.Model):
 
 
 # 本棚マスタ
-class BookShelf(models.Model):
+class BookShelfMaster(models.Model):
     class Meta:
         db_table = 'book_shelf_master'
         verbose_name_plural = '本棚マスタ'
         
-    book = models.ForeignKey(Book, verbose_name='書籍(FK)', null=True, on_delete=models.CASCADE)
     book_shelf_name = models.CharField('本棚名', max_length=255, blank=True, null=True)
+
+
+# 本棚と書籍を紐づけるテーブル
+class BookShelf(models.Model):
+    class Meta:
+        db_table = 'book_shelf'
+        verbose_name_plural = '本棚'
+
+    book = models.ForeignKey(Book, verbose_name='書籍(FK)', null=True, on_delete=models.CASCADE)
+    book_shelf = models.ForeignKey(BookShelfMaster, verbose_name='本棚(FK)', null=True, on_delete=models.CASCADE)
+
+
+# ユーザーとおススメ本棚を紐づけるテーブル
+class BookShelfRecomend(models.Model):
+    class Meta:
+        db_table = 'book_shelf_recomend'
+        verbose_name_plural = 'おススメ本棚'
+
+    user = models.ForeignKey(CustomUser, verbose_name='ユーザー(FK)', null=True, on_delete=models.CASCADE)
+    book_shelf = models.ForeignKey(BookShelfMaster, verbose_name='本棚(FK)', null=True, on_delete=models.CASCADE)
 
 
 # いいねテーブル
