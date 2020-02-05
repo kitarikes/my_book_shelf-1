@@ -51,7 +51,7 @@ class SmallCategory(models.Model):
         verbose_name_plural = '小カテゴリマスタ'
         
     learge_category = models.ForeignKey(LargeCategory, verbose_name='大カテゴリ(FK)', null=True, on_delete=models.CASCADE)
-    small_catogory_name = models.CharField('小カテゴリ名', max_length=255, blank=True, null=True)
+    small_category_name = models.CharField('小カテゴリ名', max_length=255, blank=True, null=True)
 
 
 # 書籍マスタ
@@ -59,20 +59,19 @@ class Book(models.Model):
     class Meta:
         db_table = 'book_master'
         verbose_name_plural = '書籍マスタ'
-        
+
     learge_category = models.ForeignKey(LargeCategory, verbose_name='大カテゴリ(FK)', null=True, on_delete=models.CASCADE)
     small_category = models.ForeignKey(SmallCategory, verbose_name='小カテゴリ(FK)', null=True, on_delete=models.CASCADE)
     publisher = models.ForeignKey(Publisher, verbose_name='出版社(FK)', null=True, on_delete=models.CASCADE)
     author = models.ForeignKey(Author, verbose_name='著者(FK)', null=True, on_delete=models.CASCADE)
+    price = models.IntegerField('価格', blank=True, null=True)
     book_name = models.CharField('書籍名', max_length=255, blank=True, null=True)
     image_url = models.CharField('商品画像URL', max_length=255, blank=True, null=True)
-    publish_date = models.DateTimeField('出版日')
+    publish_date = models.DateField('出版日')
     book_detail = models.CharField('書籍詳細', max_length=10000, blank=True, null=True)
     size_page = models.IntegerField('ページ数', blank=True, null=True)
-    size_height = models.IntegerField('寸法（高さ）', blank=True, null=True)
-    size_width = models.IntegerField('寸法（幅）', blank=True, null=True)
-    isbn_10 = models.IntegerField('ISBN-10', blank=True, null=True)
-    isbn_13 = models.IntegerField('ISBN-13', blank=True, null=True)
+    isbn_10 = models.CharField('ISBN-10', max_length=100, blank=True, null=True)
+    isbn_13 = models.CharField('ISBN-13', max_length=100, blank=True, null=True)
     purchase_page_url = models.CharField('購入ページURL', max_length=255, blank=True, null=True)
 
 

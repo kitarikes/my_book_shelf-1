@@ -3,6 +3,7 @@ from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import CustomUser, Publisher, Author, LargeCategory, SmallCategory, Book, BookReviews, BookShelf, Like, History, BookShelfMaster, BookShelfRecomend
 
+from .func_1 import class_1 # ファイル名　クラス名
 
 # 会員登録ページ
 class MakeAccount(LoginRequiredMixin, View):  
@@ -21,7 +22,6 @@ account_edit = AccountEdit.as_view()
 # マイページ
 class MyPage(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
-        
         # DBからユーザ情報を取得
         username = request.user.username
         gender = request.user.gender
@@ -35,7 +35,6 @@ class MyPage(LoginRequiredMixin, View):
         context = {'username':username, 'gender':gender,
         'age':age, 'favorite_genre':favorite_genre,
         'keyword_1':keyword_1, 'keyword_2':keyword_2, 'keyword_3':keyword_3}
-
 
         # HTMLを表示させる
         return render(request, 'app_bookshelf/my_page.html', context=context)
