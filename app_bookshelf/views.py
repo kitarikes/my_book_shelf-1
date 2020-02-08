@@ -1,21 +1,41 @@
-from django.shortcuts import render  
+from django.shortcuts import render, redirect
 from django.views import View  
+from django.urls import reverse_lazy
+from django.views.generic import UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import CustomUser, Publisher, Author, LargeCategory, SmallCategory, Book, BookReviews, BookShelf, Like, History, BookShelfMaster, BookShelfRecomend
+from .forms import UserCreateForm
 from .func_1 import class_1 # ファイル名　クラス名
+from django.db.models import Q
+
 
 # 会員登録ページ
-class MakeAccount(LoginRequiredMixin, View):  
-    def get(self, request, *args, **kwargs):
-        return render(request, 'app_bookshelf/make_account.html')
+from django.views import generic
+class MakeAccount(generic.CreateView):
+    template_name = 'registration/make_account.html'
+    form_class = UserCreateForm
+
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        user.is_active = True
+        user.save()
+
+        return redirect('app_bookshelf:my_page')
+
 make_account= MakeAccount.as_view()
 
 
 # 会員情報変更
-class AccountEdit(LoginRequiredMixin, View):  
-   def get(self, request, *args, **kwargs):  
-        return render(request, 'app_bookshelf/account_edit.html')
-account_edit = AccountEdit.as_view()
+class AccountEdit(LoginRequiredMixin, UpdateView):
+    model = CustomUser
+    fields = ('username', 'email', 'gender', 'age', 'favorite_genre', 'keyword_1', 'keyword_2', 'keyword_3')
+    template_name = 'registration/account_edit.html'
+    success_url = reverse_lazy('app_bookshelf:my_page')
+
+    def get_object(self):
+        return self.request.user
+
+account_edit= AccountEdit.as_view()
 
 
 # マイページ
@@ -43,13 +63,17 @@ my_page = MyPage.as_view()
 
 # 本棚検索ページ
 class ShelfSearch(LoginRequiredMixin, View):  
-    # 検索窓と、おススメ一覧（）
+    # 検索窓と、おススメ一覧
     def get(self, request, *args, **kwargs):        
-        # おススメ本棚の一覧
-        recomend_book_shelfs=BookShelfRecomend.objects.filter(user__id = request.user.id)
+        # ユーザー情報の取得
+        keyword_1 = request.user.keyword_1
+        keyword_2 = request.user.keyword_2
+        keyword_3 = request.user.keyword_3
+        ## キーワードでおススメ書籍を検索する
+        recomend_books = []
+        recomends = Book.objects.filter(Q(book_name__icontains=keyword_1) | Q(book_name__icontains=keyword_2) | Q(book_name__icontains=keyword_3)).distinct()
         # HTMLに変数を渡す
-        context = {'recomend_book_shelfs':recomend_book_shelfs}
-
+        context = {'recomends':recomends}
         return render(request, 'app_bookshelf/shelf_search.html', context=context)
 
     # 本棚の検索結果
@@ -131,6 +155,7 @@ class BookDetails(LoginRequiredMixin, View):
         context = {'result1':result1, 'result2':result2}
         return render(request, 'app_bookshelf/book_details.html', context=context)
 book_details = BookDetails.as_view()
+
 
 
 # 閲覧履歴

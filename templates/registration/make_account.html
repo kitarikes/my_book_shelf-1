@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block contents %}
+
+<!-- ↓↓タイトル部分↓↓ -->
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center border-bottom mb-3">
+  <h1 class="h2 ml-5">新規ユーザー登録</h1>
+</div>
+<!-- ↓↓登録フォーム↓↓ -->
+<div class="container-fulid">
+  <div class="row">
+    <div class="col-3">
+    </div>
+    <div class="col-5">
+      <form action="" method="POST">
+        {{ form.non_field_errors }}
+        <table class="table table-striped">
+          <tbody>
+          {% for field in form %}
+            <tr>
+              <th>
+                {{ field.label_tag }}
+              </th>
+              <td>
+                {{ field }}
+                {{ field.errors }}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+        </table>
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary btn-lg">登録</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

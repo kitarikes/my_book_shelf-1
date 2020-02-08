@@ -2,35 +2,50 @@
 {% load static %}
 {% block contents %}
 
-
 <!--　おすすめ本棚　-->
 <div class="container-fulid">
     <form method="post"　action="">
         {% csrf_token %}
         <div class="row justify-content-center">
-        <div class="input-group col-10">
+            <div class="input-group col-10">
                 <input type="text" class="form-control" placeholder="本棚を検索する" name="ShelfSearchWord">
                 <div class="input-group-append">
                     <button class="btn btn-outline-secondary" type="submit">検索</button>
                     <!--glyphicon表示されないのでFontAwesome i class="fas fa-search"></i> -->
                 </div>
-        </div>
+            </div>
         </div>
     </form>
-    
 
-<h3 class="mt-5">注目&おすすめ本棚</h3>
-
-    <div class="row">
-        {% for item in recomend_book_shelfs %}
-        <div class="col-4 m-3 p-2" >
-        <p> {{ item.book_shelf.book_shelf_name }} </p>
-        <img src="{% static 'images/shelf_search.PNG' %}" class="img-fluid center-block">
+    <h3 class="mt-5 ml-5">注目&おすすめ書籍</h3>
+    <div class="container-fluid">
+        {% for recomend in recomends %}
+        {% if forloop.first %}
+        <div class="row mt-5">
+            <div class="col-1">
+                <!-- 左の余白調整 -->
+            </div>
+            {% endif %}
+            <div class="col-2">
+                <form method="post" id="book_id_{{recomend.id}}" action="/app_bookshelf/book_details/">
+                    <input type="hidden" name="book_id" value={{recomend.id}}>
+                    {% csrf_token %}
+                    <a href="#" onclick="document.forms['book_id_{{recomend.id}}'].submit();">
+                        <img class="card-img-top" src="{{ recomend.image_url }}" alt="書籍画像">
+                    </a>
+                </form>
+            </div>
+            {% if forloop.counter|divisibleby:5 %}
         </div>
-
+        <div class="row mt-5">
+            <div class="col-1">
+                <!-- 右の余白調整 -->
+            </div>    
+            {% endif %}
+            {% if forloop.last %}
+        </div>
+        {% endif %}
         {% endfor %}
     </div>
-
 </div>
-
 {% endblock %}

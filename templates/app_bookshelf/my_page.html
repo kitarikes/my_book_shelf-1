@@ -1,66 +1,49 @@
 {% extends 'base.html' %}
 {% block contents %}
 
+<!-- ↓↓タイトル部分↓↓ -->
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center border-bottom mb-3">
+  <h1 class="h2 ml-5">マイページ</h1>
+</div>
 <div class="container">
   <div class="col-lg-8 offset-lg-2">
-
-
   <!-- <table class="table"> -->
     <table class="table table-striped">
-
-  <!-- <thead>
-    <tr>
-      <th scope="col"></th>
-      <th scope="col"></th>
-    </tr>
-  </thead> -->
-  <tbody>
-    <tr>
-      <th scope="row">ユーザーネーム：</th>
-			<td>{{ username }}</td>
-		</tr>
-		<tr>
-      <th scope="row">年齢：</th>
-			<td>{{age}}</td>
-		</tr>
-		<tr>
-      <th scope="row">性別：</th>
-      <td>{{ gender}}</td>
-		</tr>
-		<tr>
-      <th scope="row">好きなジャンル：</th>
-      <td>{{ favorite_genre}}</td>
-		</tr>
-		<tr>
-      <th scope="row">気になるワード1：</th>
-      <td>{{ keyword_1}}</td>
-    </tr>
-		<tr>
-      <th scope="row">気になるワード2：</th>
-      <td>{{ keyword_2}}</td>
-    </tr>
-		<tr>
-      <th scope="row">気になるワード3：</th>
-      <td>{{ keyword_3}}</td>
-    </tr>
-  </tbody>
-</table>
-
-
-<!-- <div class = "container-fluid"> -->
-<!-- <div class="container"> -->
-
-	<!-- <div class="text-center">  -->
-
-<a class="btn btn-primary btn-lg" href="/app_bookshelf/shelf_search" role="button">本棚検索</a>
-<a class="btn btn-primary btn-lg" href="/app_bookshelf/browsing_history" role="button">閲覧履歴</a>
-<a class="btn btn-primary btn-lg" href="/app_bookshelf/like_history" role="button">いいね</a>
-<a class="btn btn-primary btn-lg" href="/app_bookshelf/account_edit" role="button">会員情報編集</a>
-	<!-- </div> -->
-<!-- </div> -->
-
+      <tbody>
+        <tr>
+          <th scope="row">ユーザーネーム：</th>
+          <td>{{ username }}</td>
+        </tr>
+        <tr>
+          <th scope="row">年齢：</th>
+          <td>{{age}}</td>
+        </tr>
+        <tr>
+          <th scope="row">性別：</th>
+          <td>{{ gender}}</td>
+        </tr>
+        <tr>
+          <th scope="row">好きなジャンル：</th>
+          <td>{{ favorite_genre}}</td>
+        </tr>
+        <tr>
+          <th scope="row">気になるワード1：</th>
+          <td>{{ keyword_1}}</td>
+        </tr>
+        <tr>
+          <th scope="row">気になるワード2：</th>
+          <td>{{ keyword_2}}</td>
+        </tr>
+        <tr>
+          <th scope="row">気になるワード3：</th>
+          <td>{{ keyword_3}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <a class="btn btn-primary btn-lg" href="/app_bookshelf/shelf_search" role="button">本棚検索</a>
+    <a class="btn btn-primary btn-lg" href="/app_bookshelf/browsing_history" role="button">閲覧履歴</a>
+    <a class="btn btn-primary btn-lg" href="/app_bookshelf/like_history" role="button">いいね</a>
+    <a class="btn btn-primary btn-lg" href="/app_bookshelf/account_edit" role="button">会員情報編集</a>
+  </div>
 </div>
-
-</div>
-
 {% endblock %}
