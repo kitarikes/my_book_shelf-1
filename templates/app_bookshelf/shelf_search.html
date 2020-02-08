@@ -1,8 +1,36 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block contents %}
-<p style='text-align:center;'>
-    <img src="{% static 'images/shelf_search.PNG' %}">
-</p>
+
+
+<!--　おすすめ本棚　-->
+<div class="container-fulid">
+    <form method="post"　action="">
+        {% csrf_token %}
+        <div class="row justify-content-center">
+        <div class="input-group col-10">
+                <input type="text" class="form-control" placeholder="本棚を検索する" name="ShelfSearchWord">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="submit">検索</button>
+                    <!--glyphicon表示されないのでFontAwesome i class="fas fa-search"></i> -->
+                </div>
+        </div>
+        </div>
+    </form>
+    
+
+<h3 class="mt-5">注目&おすすめ本棚</h3>
+
+    <div class="row">
+        {% for item in recomend_book_shelfs %}
+        <div class="col-4 m-3 p-2" >
+        <p> {{ item.book_shelf.book_shelf_name }} </p>
+        <img src="{% static 'images/shelf_search.PNG' %}" class="img-fluid center-block">
+        </div>
+
+        {% endfor %}
+    </div>
+
+</div>
 
 {% endblock %}

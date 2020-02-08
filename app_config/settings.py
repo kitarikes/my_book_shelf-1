@@ -2,6 +2,7 @@ import os
 
 AUTH_USER_MODEL = 'app_bookshelf.CustomUser'
 
+LOGOUT_REDIRECT_URL = '/app_bookshelf/my_page/'
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'l#u(=2^)53+ac)d++5@3dcq4(5197%d$f!_j#p=e=b7c41y2wa'

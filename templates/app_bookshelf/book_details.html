@@ -1,8 +1,57 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block contents %}
-<p style='text-align:center;'>
-    <img src="{% static 'images/book_details.PNG' %}">
-</p>
+
+<div class="container">
+    <div class="col-lg-8 offset-lg-2">
+        <table class="table table-hover table-bordered">
+            <thead>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">書籍名：</th>
+                    <!-- <td width="30%">書籍名：</td width="10%">      -->
+                    <td width="80%">{{ result1.book_name }}</td width="90%">
+                </tr>
+                <tr>
+                    <th scope="row">著者名：</th>
+                    <td>{{ result1.author.author_name }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">商品イメージ：</th>
+                    <td><a href="{{ result1.purchase_page_url }}">
+                            <img src="{{ result1.image_url }}" alt="..." class="img-thumbnail">
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">商品説明：</th>
+                    <td>{{ result1.book_detail }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">レビュー：</th>
+                    <td>{% if result2.book_review %}
+                        {{ result2.book_review }}
+                        {% else %}
+                        <p>未だビューはありません</p>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">いいね登録：</th>
+                    <td>
+                        <form method="post" id="like" action="{% url 'app_bookshelf:book_details' %}">
+                            <!-- <input type="hidden" name="like" value={{item.id}}> -->
+                            {% csrf_token %}
+                            {{form.as_p }}
+                            <button type="submit" class="btn btn-primary" name="like" value="Submit">いいね</button>
+                        </form>
+                    </td">
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
 
 {% endblock %}

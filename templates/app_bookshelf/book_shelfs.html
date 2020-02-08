@@ -1,8 +1,20 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block contents %}
-<p style='text-align:center;'>
-    <img src="{% static 'images/book_shelfs.PNG' %}">
-</p>
 
+<div class="container-fluid">
+  {% for p in books %}
+  {% if forloop.first %}<div class="row mt-5">{% endif %}
+  <div class="col-sm-2">
+    <form method="post" id="book_id_{{p.id}}" action="/app_bookshelf/book_details/">
+      <input type="hidden" name="book_id" value={{p.id}}>
+      {% csrf_token %}
+      <a href="#" onclick="document.forms['book_id_{{p.id}}'].submit();">
+        <img class="card-img-top" src="{{ p.image_url }}" alt="書籍画像">
+      </a>
+    </form>
+  </div>
+  {% if forloop.counter|divisibleby:6 %}</div><div class="row mt-5">{% endif %}
+  {% if forloop.last %}</div>{% endif %}
+{% endfor %}
 {% endblock %}

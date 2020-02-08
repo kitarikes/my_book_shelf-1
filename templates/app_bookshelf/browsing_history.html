@@ -1,8 +1,68 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block contents %}
-<p style='text-align:center;'>
-    <img src="{% static 'images/browsing_history.PNG' %}">
-</p>
+
+<div class="container">
+    <form action="" method="get">
+        <div class="col-lg-10 offset-lg-1">
+            <div class="input-group">
+                <input name="query" value="{{ request.GET.query }}" type="text" class="form-control"
+                    placeholder="キーワード">
+                <div class="input-group-btn">
+                    <button type="submit" class="btn btn-primary">検索</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <hr>
+
+    <div class="col-lg-10 offset-lg-1">
+
+    <table class="table table-hover table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">書籍名</th>
+                <th scope="col">閲覧日時</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in page_obj %}
+            <tr>
+                <form method="post" name="{{item.id}}" id="{{item.book.id}}" action="{% url 'app_bookshelf:book_details' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="book_id" value={{item.book.id}}>
+                <td>                    
+                    <a href="#" onclick="document.forms['{{item.id}}'].submit();">
+                        {{ item.book.book_name }}/{{item.id}}/{{ item.book.id }}</a>
+                </td>
+                <td>{{ item.history_date }}</td>
+                </form>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>    
+    
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+
 
 {% endblock %}
