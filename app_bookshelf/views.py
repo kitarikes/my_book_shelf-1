@@ -89,10 +89,31 @@ class ShelfSearch(LoginRequiredMixin, View):
         if  searchword is None:
             book_shelfs = BookShelfMaster.objects.all()
         else:
-            book_shelfs = BookShelfMaster.objects.filter(book_shelf_name__icontains= searchword)
+            book_shelfs = []
+
+            # 1.本棚名と検索ワード部分一致
+            searched_book_shelfs = list(BookShelfMaster.objects.filter(book_shelf_name__icontains=searchword))
+            book_shelfs += searched_book_shelfs
+
+            # 2.書籍名が検索ワードと一致したものを取得
+            searched_books = [bookshelf.book_shelf for bookshelf in BookShelf.objects.filter(book__book_name__icontains=searchword)]
+            book_shelfs += searched_books
+
+            # 3.書籍詳細と検索ワードの部分一致所得
+            searched_book_details = [bookshelf.book_shelf for bookshelf in BookShelf.objects.filter(book__book_detail__icontains=searchword)]
+            book_shelfs += searched_book_details
+
+
+            book_shelfs = list(set(book_shelfs))
         
-        #print (request.POST.get("SearchWordfromShelf","default"))
-        #並び替えとか追加
+        # print (request.POST.get("SearchWordfromShelf","default"))
+
+        # 並び替え(1. 優先)
+        for searched_book_shelf in searched_book_shelfs:
+            book_shelfs.remove(searched_book_shelf)
+            book_shelfs.insert(0, searched_book_shelf)
+
+
 
         # HTMLに変数を渡す
         context = {'book_shelfs':book_shelfs}
