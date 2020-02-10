@@ -2,6 +2,11 @@
 {% load static %}
 {% block contents %}
 
+<!-- ↓↓タイトル部分↓↓ -->
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center border-bottom mb-3">
+    <h1 class="h2 ml-5">詳細ページ</h1>
+  </div>
+
 <div class="container">
     <div class="col-lg-8 offset-lg-2">
         <table class="table table-hover table-bordered">
@@ -33,24 +38,25 @@
                     <td>{% if result2.book_review %}
                         {{ result2.book_review }}
                         {% else %}
-                        <p>未だビューはありません</p>
+                        <p>未だレビューはありません</p>
                         {% endif %}
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row">いいね登録：</th>
+                    <th scope="row">マイ本棚に追加：</th>
                     <td>
-                        <form method="post" id="like" action="{% url 'app_bookshelf:book_details' %}">
-                            <!-- <input type="hidden" name="like" value={{item.id}}> -->
-                            {% csrf_token %}
+
+                        <!-- メソッドは"get" -->
+                        <form method="post"  id="{{ result1.id }}" action="/app_bookshelf/give_like/">
+                            {%csrf_token%}
                             {{form.as_p }}
-                            <button type="submit" class="btn btn-primary" name="like" value="Submit">いいね</button>
+                        <button type="submit" class="btn btn-outline-primary" class="btn btn-primary" name="submit" value="{{ result1.id }}" onclick="document.forms['{{result1.id}}'].submit();">追加する</button>
                         </form>
+
                     </td">
                 </tr>
             </tbody>
         </table>
-
     </div>
 </div>
 

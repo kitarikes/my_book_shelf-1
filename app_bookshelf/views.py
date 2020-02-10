@@ -89,10 +89,24 @@ class ShelfSearch(LoginRequiredMixin, View):
         if  searchword is None:
             book_shelfs = BookShelfMaster.objects.all()
         else:
-            book_shelfs = BookShelfMaster.objects.filter(book_shelf_name__icontains= searchword)
-        
-        #print (request.POST.get("SearchWordfromShelf","default"))
-        #並び替えとか追加
+            book_shelfs = []
+
+            # 1.本棚名と検索ワード部分一致
+            searched_book_shelfs = list(BookShelfMaster.objects.filter(book_shelf_name__icontains=searchword))
+            book_shelfs += searched_book_shelfs
+
+            # 2.書籍名が検索ワードと一致したものを取得
+            searched_books = [bookshelf.book_shelf for bookshelf in BookShelf.objects.filter(book__book_name__icontains=searchword)]
+            book_shelfs += searched_books
+
+            # 3.書籍詳細と検索ワードの部分一致所得
+            searched_book_details = [bookshelf.book_shelf for bookshelf in BookShelf.objects.filter(book__book_detail__icontains=searchword)]
+            book_shelfs += searched_book_details
+
+
+            book_shelfs = list(set(book_shelfs))
+
+
 
         # HTMLに変数を渡す
         context = {'book_shelfs':book_shelfs}
@@ -145,16 +159,53 @@ class BookShelfs(LoginRequiredMixin, View):
 book_shelfs = BookShelfs.as_view()
 
 # 本の詳細ページ
+from django.shortcuts import redirect
+from .forms import LikeForm
+from datetime import datetime
+from django.contrib import messages
+
 class BookDetails(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
+        # 「book_shelfsのフォーム」から書籍IDを取得
         input_data = int(request.POST.get("book_id"))
 
+        # 書籍DBから書籍を取得（書籍IDを使う）
         result1 = Book.objects.get(id=input_data)
-        result2 = BookReviews.objects.filter(id=input_data).first()
+        # レビューDBからレビューを取得（書籍IDを使う）
+        result2 = BookReviews.objects.filter(book__id=input_data).first()
 
+        # HTMLに変数を渡す
         context = {'result1':result1, 'result2':result2}
         return render(request, 'app_bookshelf/book_details.html', context=context)
 book_details = BookDetails.as_view()
+
+
+class GiveLike(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        # 「いいねボタン」フォームのPOSTから書籍IDを取得
+        input_data2 = int(request.POST.get("submit"))
+
+        # 空フォーム(ボタンのみ)の読み込み
+        form = LikeForm(request.POST)
+
+        # いいねDBからユーザーID＆書籍IDに該当するレコード検索
+        my_like = Like.objects.filter(Q(user__id = request.user.id) & Q(book__id = input_data2))
+
+        # レコード無い場合はマイ本棚に追加
+        if form.is_valid() and my_like.count() == 0:
+            f = Like(book=Book.objects.get(id=input_data2), user=request.user, like_date=datetime.now())
+            f.save(force_insert=True)
+            messages.success(request, 'マイ本棚に追加しました')  
+            return redirect('app_bookshelf:shelf_search')
+        # レコード有る場合は追加しない
+        else:
+            form = LikeForm()
+            messages.error(request, '既にマイ本棚に追加済みです')
+  
+        return redirect("app_bookshelf:shelf_search")
+
+give_like = GiveLike.as_view()
+
 
 
 

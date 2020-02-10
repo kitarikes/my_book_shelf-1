@@ -10,3 +10,10 @@ class UserCreateForm(UserCreationForm):
         fields = ('username', 'email', 'gender', 'age', 'favorite_genre', 'keyword_1', 'keyword_2', 'keyword_3')
 
 
+# 詳細画面でマイ本棚登録に使用するフォームの定義（※ボタンのみ）
+from .models import Like
+from django import forms
+class LikeForm(forms.ModelForm):
+	class Meta:
+		model = Like
+		fields = ()

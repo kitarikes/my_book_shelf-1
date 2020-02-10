@@ -11,4 +11,5 @@ urlpatterns = [
     path('like_history/', views.like_history, name='like_history'),
     path('book_shelfs/', views.book_shelfs, name='book_shelfs'),
     path('book_details/', views.book_details, name='book_details'),
+    path('give_like/', views.give_like, name='give_like'),
     ]
