@@ -106,6 +106,11 @@ class ShelfSearch(LoginRequiredMixin, View):
 
             book_shelfs = list(set(book_shelfs))
 
+                    # 並び替え(1. 優先)
+        for searched_book_shelf in searched_book_shelfs:
+            book_shelfs.remove(searched_book_shelf)
+            book_shelfs.insert(0, searched_book_shelf)
+
 
 
         # HTMLに変数を渡す
