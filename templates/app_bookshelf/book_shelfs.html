@@ -2,19 +2,27 @@
 {% load static %}
 {% block contents %}
 
-<div class="container-fluid">
+<div class="container-fluid container-shelf">
   {% for p in books %}
-  {% if forloop.first %}<div class="row mt-5">{% endif %}
-  <div class="col-sm-2">
+  {% if forloop.first %}<div class="row mt-0 pt-4 align-items-end shelf-row"><div class="col-sm-1 col-1"></div>{% endif %}
+  <div class="col-sm-2 col-10 unitshelf"> 
     <form method="post" id="book_id_{{p.id}}" action="/app_bookshelf/book_details/">
       <input type="hidden" name="book_id" value={{p.id}}>
       {% csrf_token %}
       <a href="#" onclick="document.forms['book_id_{{p.id}}'].submit();">
-        <img class="card-img-top" src="{{ p.image_url }}" alt="書籍画像">
+        <img class="card-img-top shadow" src="{{ p.image_url }}" alt="書籍画像">
       </a>
     </form>
   </div>
-  {% if forloop.counter|divisibleby:6 %}</div><div class="row mt-5">{% endif %}
+  {% if forloop.counter|divisibleby:5 %}
+</div>
+<div class="col-sm-1"></div>
+<div class="row">
+<!-- <div class="col-sm-12"><img class="shelfparts_horizontal" src="{% static 'images/b_simple_23_0L.png' %}" alt="棚"></div> -->
+</div>
+<div class="row mt-0 pt-4  align-items-end shelf-row">
+<div class="col-sm-1 col-1"></div>
+  {% endif %}
   {% if forloop.last %}</div>{% endif %}
 {% endfor %}
 {% endblock %}

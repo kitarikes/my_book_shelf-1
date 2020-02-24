@@ -86,9 +86,18 @@ class ShelfSearch(LoginRequiredMixin, View):
         searchword = request.POST.get("ShelfSearchWord")
         #print (searchword)
         #getできなかったらNONEが帰ってくるので、すべて検索する
-        if  searchword is None:
+        if searchword is None:
             book_shelfs = BookShelfMaster.objects.all()
+
+        # 追加
         else:
+            ai_recommend_books = Book.objects.filter(book_name__icontains=searchword)
+
+            isEmpty = False
+            # 検索ワードと部分一致する書籍が存在しないとき`searchewordの本棚`を表示しない
+            if not ai_recommend_books:
+                isEmpty = True
+
             book_shelfs = []
 
             # 1.本棚名と検索ワード部分一致
@@ -114,7 +123,7 @@ class ShelfSearch(LoginRequiredMixin, View):
 
 
         # HTMLに変数を渡す
-        context = {'book_shelfs':book_shelfs}
+        context = {'book_shelfs':book_shelfs, 'searchword': searchword, 'isEmpty': isEmpty} #追加
         
         return render(request, 'app_bookshelf/shelf_list.html', context=context)
 
@@ -124,21 +133,38 @@ shelf_search = ShelfSearch.as_view()
 # 本棚
 class BookShelfs(LoginRequiredMixin, View):  
    def post(self, request, *args, **kwargs):
-        print(request.POST.get("result_pk"))
-        book_shelf_id = int(request.POST.get("result_pk"))
+        searchword = request.POST.get('searchword')
 
-        book_shelf_name = BookShelfMaster.objects.get(id = book_shelf_id)
-       # 選択された本棚に紐づく書籍オブジェクトを取得
-        book_objects = BookShelf.objects.filter(book_shelf__id = book_shelf_id)
+        # 追加
+        # searchwordの本棚クリック
+        if searchword:
+            ai_recommend_books_ = Book.objects.filter(book_name__icontains=searchword)
+            # 表示する本のダブりを無くす
+            ai_recommend_books = []
+            alreday_get_books = []
+            for book in ai_recommend_books_:
+                if not book.book_name in alreday_get_books:
+                    alreday_get_books.append(book.book_name)
+                    ai_recommend_books.append(book)
 
-       # 書籍オブジェクト１つ１つから書籍IDを取得（for文つかう）
-        books_id = []
-        for i in book_objects:
-            books_id.append(i.book_id)
+            context ={'books': ai_recommend_books, 'book_shelf_name': searchword+str('の本棚')}
 
-       # 書籍DBから書籍情報を検索（書籍IDを使う）
-        books = Book.objects.filter(id__in=books_id)
-        context = {'books':books, 'book_shelf_name':book_shelf_name}
+        else:
+            print(request.POST.get("result_pk"))
+            book_shelf_id = int(request.POST.get("result_pk"))
+
+            book_shelf_name = BookShelfMaster.objects.get(id = book_shelf_id)
+            # 選択された本棚に紐づく書籍オブジェクトを取得
+            book_objects = BookShelf.objects.filter(book_shelf__id = book_shelf_id)
+
+            # 書籍オブジェクト１つ１つから書籍IDを取得（for文つかう）
+            books_id = []
+            for i in book_objects:
+                books_id.append(i.book_id)
+
+            # 書籍DBから書籍情報を検索（書籍IDを使う）
+            books = Book.objects.filter(id__in=books_id)
+            context = {'books':books, 'book_shelf_name':book_shelf_name}
 
         return render(request, 'app_bookshelf/book_shelfs.html', context=context)
 
@@ -161,6 +187,7 @@ class BookShelfs(LoginRequiredMixin, View):
        context = {'books':books}
 
        return render(request, 'app_bookshelf/book_shelfs.html', context=context)
+
 book_shelfs = BookShelfs.as_view()
 
 # 本の詳細ページ
@@ -173,22 +200,50 @@ class BookDetails(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         # 「book_shelfsのフォーム」から書籍IDを取得
         input_data = int(request.POST.get("book_id"))
-
         # 書籍DBから書籍を取得（書籍IDを使う）
-        result1 = Book.objects.get(id=input_data)
+        book_result = Book.objects.get(id=input_data)
+
         # レビューDBからレビューを取得（書籍IDを使う）
-        result2 = BookReviews.objects.filter(book__id=input_data).first()
+        ## 全部
+        review_result_all = BookReviews.objects.filter(book__id=input_data).order_by('id')
+        ## ２件目以降のレビュー
+        review_result_rest = BookReviews.objects.filter(book__id=input_data).exclude(pk=review_result_all[0].id).order_by('id') #２件目以降
+
+        #レビュー数
+        ## 全部のレビュー数
+        len_review_result = len(review_result_all)
+        ## ２件目以降のレビュー数
+        # len_review_result_rest = len(review_result_rest)
+
+        # 星システム用に５段階評価を100点満点に変換
+        ## 全部
+        review_result_all_star_100 = []
+        for i in review_result_all:
+            review_result_all_star_100.append(int(i.book_review_star)*20)
+        ## ２件目以降
+        review_result_rest_star_100 = []
+        for i in review_result_rest:
+            review_result_rest_star_100.append(int(i.book_review_star)*20)
+
+        # ブックレビューフィールド
+        book_review_field_rest = []
+        for i in review_result_rest:
+            book_review_field_rest.append(i.book_review)
+
+        # ブックレビューフィールドと星
+        reviews_stars = zip(review_result_rest_star_100,book_review_field_rest)
 
         # HTMLに変数を渡す
-        context = {'result1':result1, 'result2':result2}
+        context = {'book_result':book_result, 'review_result_all':review_result_all,'review_result_rest':review_result_rest,
+                   'len_review_result':len_review_result, 'review_result_rest_star_100':review_result_rest_star_100,
+                   'reviews_stars':reviews_stars,'review_result_all_star_100':review_result_all_star_100
+                    }
         return render(request, 'app_bookshelf/book_details.html', context=context)
-book_details = BookDetails.as_view()
 
 
-class GiveLike(LoginRequiredMixin, View):
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         # 「いいねボタン」フォームのPOSTから書籍IDを取得
-        input_data2 = int(request.POST.get("submit"))
+        input_data2 = int(request.GET.get("submit"))
 
         # 空フォーム(ボタンのみ)の読み込み
         form = LikeForm(request.POST)
@@ -209,7 +264,7 @@ class GiveLike(LoginRequiredMixin, View):
   
         return redirect("app_bookshelf:shelf_search")
 
-give_like = GiveLike.as_view()
+book_details = BookDetails.as_view()
 
 
 
@@ -243,15 +298,17 @@ browsing_history = BrowsingHistory.as_view()
 
 # いいねリスト
 from datetime import datetime
+from django.shortcuts import get_list_or_404
 
 class LikeHistory(LoginRequiredMixin, View):  
     def get(self, request, *args, **kwargs):
 
-        # 閲覧履歴の一覧
-        like_history= Like.objects.filter(user__id = request.user.id)
+        # いいね履歴の一覧
+        like_history= Like.objects.filter(user__id = request.user.id).order_by('-like_date')
+        # like_history= get_list_or_404(Like, pk=like.id).first()
 
         # ページネーション
-        paginator = Paginator(like_history, 5)
+        paginator = Paginator(like_history, 10)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
@@ -264,7 +321,6 @@ class LikeHistory(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         item_pks = request.POST.getlist('delete')
         Like.objects.filter(user__id = request.user.id, pk__in=item_pks).delete()
-        
         return redirect('app_bookshelf:like_history')
 
 like_history = LikeHistory.as_view()

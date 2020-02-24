@@ -7,26 +7,25 @@
     <form method="post"　action="">
         {% csrf_token %}
         <div class="row justify-content-center">
-            <div class="input-group col-10">
+            <div class="input-group col-10 mt-2 mb-2">
                 <input type="text" class="form-control" placeholder="本棚を検索する" name="ShelfSearchWord">
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="submit">検索</button>
-                    <!--glyphicon表示されないのでFontAwesome i class="fas fa-search"></i> -->
+                    <button class="btn btn-secondary" type="submit">検索</button>
                 </div>
             </div>
         </div>
     </form>
 
-    <h3 class="mt-5 ml-5">注目&おすすめ書籍</h3>
+    <h3 class="mt-5 col-10 offset-1">注目&おすすめ書籍</h3>
     <div class="container-fluid">
         {% for recomend in recomends %}
         {% if forloop.first %}
-        <div class="row mt-5">
-            <div class="col-1">
+        <div class="row mt-0 pt-4 align-items-end shelf-row">
+            <div class="col-1 col-sm-1">
                 <!-- 左の余白調整 -->
             </div>
             {% endif %}
-            <div class="col-2">
+            <div class="col-sm-2 col-10 unitshelf">
                 <form method="post" id="book_id_{{recomend.id}}" action="/app_bookshelf/book_details/">
                     <input type="hidden" name="book_id" value={{recomend.id}}>
                     {% csrf_token %}
@@ -37,8 +36,8 @@
             </div>
             {% if forloop.counter|divisibleby:5 %}
         </div>
-        <div class="row mt-5">
-            <div class="col-1">
+        <div class="row mt-0 pt-4 align-items-end shelf-row">
+            <div class="col-1 col-sm-1">
                 <!-- 右の余白調整 -->
             </div>    
             {% endif %}

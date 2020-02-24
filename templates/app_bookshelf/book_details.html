@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block contents %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 <!-- ↓↓タイトル部分↓↓ -->
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center border-bottom mb-3">
     <h1 class="h2 ml-5">詳細ページ</h1>
-  </div>
+</div>
 
 <div class="container">
     <div class="col-lg-8 offset-lg-2">
@@ -15,44 +16,76 @@
             <tbody>
                 <tr>
                     <th scope="row">書籍名：</th>
-                    <!-- <td width="30%">書籍名：</td width="10%">      -->
-                    <td width="80%">{{ result1.book_name }}</td width="90%">
+                    <td width="80%">{{ book_result.book_name }}</td width="90%">
                 </tr>
                 <tr>
                     <th scope="row">著者名：</th>
-                    <td>{{ result1.author.author_name }}</td>
+                    <td>{{ book_result.author.author_name }}</td>
                 </tr>
                 <tr>
                     <th scope="row">商品イメージ：</th>
-                    <td><a href="{{ result1.purchase_page_url }}">
-                            <img src="{{ result1.image_url }}" alt="..." class="img-thumbnail">
+                    <td><a href="{{ book_result.purchase_page_url }}">
+                            <img src="{{ book_result.image_url }}" alt="..." class="img-thumbnail">
                         </a>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">商品説明：</th>
-                    <td>{{ result1.book_detail }}</td>
+                    <td>{{ book_result.book_detail }}</td>
                 </tr>
                 <tr>
-                    <th scope="row">レビュー：</th>
-                    <td>{% if result2.book_review %}
-                        {{ result2.book_review }}
-                        {% else %}
-                        <p>未だレビューはありません</p>
-                        {% endif %}
+                    <th scope="row">レビュー：{{ len_review_result }}件</th>
+
+                    <td>
+                        <div id="carouselExampleControls" class="carousel slide" data-ride="carousel" data-interval="10000">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    {% if review_result_all %}
+                                    <div class="star-ratings-sprite">
+                                        <span style="width:{{review_result_all_star_100.0}}%"
+                                            class="star-ratings-sprite-rating"></span>
+                                    </div><br>
+                                    {{ review_result_all.0.book_review }}
+
+                                    {% else %}
+                                    <p>未だレビューはありません</p>
+                                    {% endif %}
+                                </div>
+
+                                {% for item1,item2 in reviews_stars %}
+                                <div class="carousel-item">
+                                    <div class="star-ratings-sprite">
+                                        <span style="width:{{item1}}%" class="star-ratings-sprite-rating"></span>
+                                    </div><br>
+                                    {{ item2 }}
+                                </div>
+                                {% endfor %}
+                            </div>
+
+                            <a class="carousel-control-prev" href="#carouselExampleControls" role="button"
+                                data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <a class="carousel-control-next" href="#carouselExampleControls" role="button"
+                                data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </div>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">マイ本棚に追加：</th>
                     <td>
-
                         <!-- メソッドは"get" -->
-                        <form method="post"  id="{{ result1.id }}" action="/app_bookshelf/give_like/">
+                        <form method="get" id="{{ book_result.id }}" action="/app_bookshelf/book_details/">
                             {%csrf_token%}
                             {{form.as_p }}
-                        <button type="submit" class="btn btn-outline-primary" class="btn btn-primary" name="submit" value="{{ result1.id }}" onclick="document.forms['{{result1.id}}'].submit();">追加する</button>
+                            <button type="submit" class="btn btn-outline-primary" class="btn btn-primary" name="submit"
+                                value="{{ book_result.id }}"
+                                onclick="document.forms['{{book_result.id}}'].submit();">追加する</button>
                         </form>
-
                     </td">
                 </tr>
             </tbody>

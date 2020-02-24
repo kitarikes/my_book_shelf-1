@@ -1,0 +1,157 @@
+/* 岡村さん分↓↓ */
+.star-ratings-sprite {
+	background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/2605/star-rating-sprite.png") repeat-x;
+	font-size: 0;
+	height: 21px;
+	line-height: 0;
+	float: left;
+	/* overflow: hidden; */
+	text-indent: -999em;
+	width: 110px;
+	margin: 0 auto;
+	}
+	.star-ratings-sprite-rating {
+	background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/2605/star-rating-sprite.png") repeat-x;
+	background-position: 0 100%;
+	float: left;
+	height: 21px;
+	display: block;
+  }
+  
+
+
+
+/* 青木さん分↓↓ */  
+/*　配色　#A4CABC PALEBLUE　#EAB364 PALEYELLOW　#B2473E REDBROWN　#ACBD78 OLIVE　*/
+/* bootstrapの既定の設定から変更する */
+.navbar{
+  background-image: url("/static/images/leather.png");
+  background-color:#ACBD78;
+}
+
+.container-BSsearch{
+  background-image: url("/static/images/paper-fibers.png");
+  background-color:#A4CABC;
+}
+
+body {
+  background-image: url("/static/images/paper-fibers.png");
+  background-color:#EAB364;
+  color:#B2473E;
+  
+}
+
+td {
+  background-image: url("/static/images/paper-fibers.png");
+  background-color:#fff;
+  
+}
+
+th {
+  background-image: url("/static/images/paper-fibers.png");
+  background-color:#ACBD78;
+  
+}
+
+/*card column の列数*/
+
+@media (max-width: 575.98px) {
+.card-columns {
+  -webkit-column-count: 1;
+  -moz-column-count: 1;
+  column-count: 1;
+}
+.unitshelf::after{
+  content: '';/*何も入れない*/
+  display: inline-block;
+  width: 100%;/*画像の幅*/
+  height: auto;/*画像の高さ*/
+  background-image: url("/static/images/shelfboard.png");
+  background-size: contain;
+  top:100%;
+}
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+.card-columns {
+  -webkit-column-count: 2;
+  -moz-column-count: 2;
+  column-count: 2;
+}
+/*棚の画像*/
+.shelf-row{
+background-image: url("/static/images/shelf_row.png");
+background-size:contain;
+background-repeat: repeat-x;
+padding:0px;
+margin:0px;
+}
+.card-img-top{
+  margin-bottom: 12px;
+  border-radius: 0;
+}
+}
+
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+.card-columns {
+  -webkit-column-count: 3;
+  -moz-column-count: 3;
+  column-count: 3;
+}
+/*棚の画像*/
+.shelf-row{
+  background-image: url("/static/images/shelf_row.png");
+  background-size:contain;
+  background-repeat: repeat-x;
+  padding:0px;
+  margin:0px;
+}
+.card-img-top{
+  margin-bottom: 6px;
+  border-radius: 0;
+}
+}
+
+
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+.card-columns {
+  -webkit-column-count: 4;
+  -moz-column-count: 4;
+  column-count: 4;
+}
+/*棚の画像*/
+.shelf-row{
+  background-image: url("/static/images/shelf_row.png");
+  background-size:contain;
+  background-repeat: repeat-x;
+  padding:0px;
+  margin:0px;
+}
+.card-img-top{
+  margin-bottom: 10px;
+  border-radius: 0;
+}
+}
+
+
+@media (min-width: 1200px) {
+.card-columns {
+  -webkit-column-count: 5;
+  -moz-column-count: 5;
+  column-count: 5;
+}
+/*棚の画像*/
+.shelf-row{
+  background-image: url("/static/images/shelf_row.png");
+  background-size:contain;
+  background-repeat: repeat-x;
+  padding:0px;
+  margin:0px;
+}
+.card-img-top{
+  margin-bottom: 12px;
+  border-radius: 0;
+}
+}

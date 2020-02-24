@@ -1,50 +1,77 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block contents %}
-<!-- <p style='text-align:center;'>
-    <img src="{% static 'images/shelf_list.PNG' %}">
-</p> -->
-
 
 <form method="post" action="{% url 'app_bookshelf:shelf_search' %}">
     {% csrf_token %}
        
-    <div class="input-group col-8 offset-md-1">
+    <div class="input-group col-8 offset-md-1 mt-2 mb-2">
             
             <input type="text" class="form-control" placeholder="本棚を検索する" name="ShelfSearchWord">
         
             <div class="input-group-append">
                 <button class="btn btn-outline-secondary" type="submit">検索</button>
             </div>
-                <!-- <i class="fas fa-search"></i> -->
-        
     
     </div>
-    
 </form>
 
-<div class="container-fulid bg-info m-3 p-3">
+
+<div class="container-fulid m-3 p-3 container-BSsearch">
+    <div class="card-columns">
+
+    <!--追加-->
+        {% if not isEmpty %}
+            <form method="post" name="recommend_BS" action="{% url 'app_bookshelf:book_shelfs' %}">
+                {% csrf_token %}
+                <input type="hidden" name="searchword" value={{searchword}}>
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{searchword}}の本棚</h5>
+                            <p class="card-text">(AIが作成しました) </p>
+                            <!--pk:{{item.pk}} loop:{{forloop.counter0}}--></p>
+                            <a class="float-right" href="javascript:recommend_BS.submit()"><img width="80%" src="{% static 'images/walking.png' %}"></a>
+                        </div>
+                    </div>
+            </form>
+        {% endif %}
 
     {% for item in book_shelfs %} 
-    <div class="row list-group">
-        <div class="col-6  offset-md-1 mt-1">
-            <!-- <a href="#" class="list-group-item list-group-item-action">{{ item.book_shelf_name }}key:{{item.pk}}</a> -->
-            
-            <form method="post" name="BSresult" action="{% url 'app_bookshelf:book_shelfs' %}">
-                {% csrf_token %}
-                <input type="hidden" name="result_pk" value={{item.pk}}>
-                {% if book_shelfs|length > 1 %}
-                <a href="javascript:BSresult[{{forloop.counter0}}].submit()" class="list-group-item list-group-item-action">{{ item.book_shelf_name }} pk:{{item.pk}}</a>
-                {% else %}
-                <a href="javascript:BSresult.submit()" class="list-group-item list-group-item-action">{{ item.book_shelf_name }} pk:{{item.pk}}</a>
-                {% endif %}
-            </form>
-            
+<!--何件かある場合-->
+    {%  if book_shelfs|length > 1 %}
+    <form method="post" name="BSresult" action="{% url 'app_bookshelf:book_shelfs' %}">
+    {% csrf_token %}
+    <input type="hidden" name="result_pk" value={{item.pk}}>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ item.book_shelf_name }}</h5>
+                <p class="card-text"><!--pk:{{item.pk}} loop:{{forloop.counter0}}--></p>
+                <a class="float-right" href="javascript:BSresult[{{forloop.counter0}}].submit()"><img width="80%" src="{% static 'images/walking.png' %}"></a>
+            </div>
         </div>
-    </div>
+    </form>
+<!--1件しかない場合-->
+    {% else %}
+    <form method="post" name="BSresult" action="{% url 'app_bookshelf:book_shelfs' %}">
+    {% csrf_token %}
+    <input type="hidden" name="result_pk" value={{item.pk}}>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ item.book_shelf_name }}</h5>
+                <p class="card-text">pk:{{item.pk}} </p>
+                <a  class="float-right" href="javascript:BSresult.submit()"><img width="80%" src="{% static 'images/walking.png' %}"></a>
+            </div>
+        </div>
+    </form>>
+    {% endif %}
+
+
+
+<!--０件の場合-->
     {% empty %}
     <p>該当なし</p>
     {% endfor %}
+    </div>
 
 </div>
 

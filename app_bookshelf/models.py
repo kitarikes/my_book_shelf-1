@@ -83,6 +83,7 @@ class BookReviews(models.Model):
         
     book = models.ForeignKey(Book, verbose_name='書籍(FK)', null=True, on_delete=models.CASCADE)
     book_review = models.CharField('書籍レビュー', max_length=5000, blank=True, null=True)
+    book_review_star = models.IntegerField('スターの数', blank=True, null=True)
 
 
 
